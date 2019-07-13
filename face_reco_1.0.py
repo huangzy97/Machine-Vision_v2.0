@@ -15,6 +15,7 @@ import numpy as np   # 数据处理的库 numpy
 import cv2           # 图像处理的库 OpenCv
 import pandas as pd  # 数据处理的库 Pandas
 import time
+import os
 # 人脸识别模型，提取128D的特征矢量
 # Refer this tutorial: http://dlib.net/python/index.html#dlib.face_recognition_model_v1
 facerec = dlib.face_recognition_model_v1("data/data_dlib/dlib_face_recognition_resnet_model_v1.dat")
@@ -113,21 +114,14 @@ while cap.isOpened():
                 # Find the one with minimum e distance
                 similar_person_num = e_distance_list.index(min(e_distance_list))
                 print("Minimum e distance with person", int(similar_person_num)+1)
+                #######
                 if min(e_distance_list) < 0.4:
-                    # 在这里修改 person_1, person_2 ... 的名字
-                    # 可以在这里改称 Jack, Tom and others
-                    # Here you can modify the names shown on the camera
-# =============================================================================
-#                     name_namelist[k] = u'huangzy97 '+str(int(similar_person_num)+1)
-#                     print("May be person "+str(int(similar_person_num)+1))
-# =============================================================================                   
-                    name_namelist[k] = str("Person "+str(int(similar_person_num)+1))\
-                    .replace("Person 1", "黄兆宇")\
-                    .replace("Person 2", "冯兵")\
-                    .replace("Person 3", "Ronnie")\
-                    .replace("Person 4", "Terry")\
-                    .replace("Person 5", "Wilson")
-                    print("May be person "+str(int(similar_person_num)+1))                   
+                    person_list = os.listdir("data/data_faces_from_camera/")##获取当前所有人名信息
+                    person_name_list = []
+                    for person in person_list:
+                        person_name_list.append(str(person.split('_')[-1]))
+                    name_namelist[k] = person_name_list[int(similar_person_num)]                
+                    print("可能是"+name_namelist[k])                   
                 else:
                     print("Unknown person")
                 # 矩形框
@@ -137,24 +131,15 @@ while cap.isOpened():
                 print('\n')
             # 在人脸框下面写人脸名字
             for i in range(len(faces)):               
-                #putText 图片，添加的文字，左上角坐标，字体，字体大小，颜色，字体粗细
                 img_rd = cv2ImgAddText(img_rd, name_namelist[i], pos_namelist[i][0], pos_namelist[i][1], (0, 255, 255), 50)
-                #cv2.putText(img_rd, name_namelist[i], pos_namelist[i], font, 0.8, (0, 255, 255), 1, cv2.LINE_AA)
                 print (pos_namelist[i])
-                #cv2ImgAddText(img_rd, "黄兆宇", 140, 0.8, (255, 255, 0), 20)
+
     print("Faces in camera now:", name_namelist, "\n") #"考勤时间为：",time.strftime('%Y-%m-%d %H-%M-%S',time.localtime(time.time())), 
-    #cv2.putText(img_rd, "Press 'q': Quit", (20, 450), font, 0.8, (84, 255, 159), 1, cv2.LINE_AA)
     img_rd = cv2ImgAddText(img_rd, "按'Q':退出", 20, 430, (84, 255, 159), 30)
     cv2.putText(img_rd, "Face Recognition", (20, 40), font, 1, (0, 0, 0), 1, cv2.LINE_AA)
     img_rd = cv2ImgAddText(img_rd, "人脸：" + str(len(faces)), 20, 80, (0, 0, 255), 30)
-    #cv2.putText(img_rd, "Faces: " + str(len(faces)), (20, 100), font, 1, (0, 0, 255), 1, cv2.LINE_AA)
-    #img_rd = cv2ImgAddText(img_rd, "黄兆宇", 10, 65, (0, 0 , 139), 20)
     # 窗口显示 show with opencv
     cv2.imshow("camera", img_rd)
-# =============================================================================
-# img = cv2ImgAddText(cv2.imread('fei_SVM.png'), "黄兆宇", 10, 65, (0, 0 , 139), 20)
-# cv2.imshow('show', img)
-# =============================================================================
 # 释放摄像头 release camera
 cap.release()
 # 删除建立的窗口 delete all the windows
