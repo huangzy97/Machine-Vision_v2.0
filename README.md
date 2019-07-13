@@ -5,3 +5,7 @@
 -  改进人脸照片中文名称保存
 -  识别的时候[中文显示人名](https://github.com/huangzy97/Machine-Vision_v2.0/blob/master/face_reco_1.0.py)  
 ![image](https://github.com/huangzy97/lib/blob/master/%E4%B8%AD%E6%96%87%E6%98%BE%E7%A4%BA.gif) 
+## 场景应用
+-  考勤
+-  安全监控
+-  ...
